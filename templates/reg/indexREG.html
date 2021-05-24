@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Add padding to containers */
+.container {
+    padding: 16px;
+    background-color: white;
+}
+
+/* Full-width input fields */
+input[type=text], input[type=password], select  {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+/* Overwrite default styles of hr */
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+}
+
+/* Set a style for the submit button */
+.registerbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.registerbtn:hover {
+    opacity: 1;
+}
+
+form{
+    margin: 0 auto;
+    width: 50em;
+}
+
+/* Add a blue text color to links */
+a {
+    color: dodgerblue;
+}
+
+/* Set a grey background color and center the text of the "sign in" section */
+.signin {
+    background-color: #f1f1f1;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+
+
+
+<form class="form" action="" name="reg_form" method="post">
+    {% csrf_token %}
+  <div class="container">
+    <h1>Регистрация пользователя</h1>
+    <hr>
+
+    <label for="email"><b>Фамилия пользователя</b></label>
+    <input type="text" placeholder="Фамилия" maxlength="16" name="fname" required>
+
+    <label for="email"><b>Имя пользователя</b></label>
+    <input type="text" placeholder="Имя" maxlength="16" name="sname" required>
+
+    <label for="email"><b>Отчество пользователя</b></label>
+    <input type="text" placeholder="Отчество" maxlength="16" name="tname" required>
+
+    <label for="email"><b>Адрес пользователя</b></label>
+    <input type="text" placeholder="Адрес" name="addr" maxlength="100" required>
+
+    <label for="email"><b>Телефон пользователя</b></label>
+    <input type="text" placeholder="Телефон" name="PhoneNumber" maxlength="20" required>
+
+
+    <label for="email"><b>Должность</b></label>
+    <br>
+      <select name="pleases">
+            {% for item in list %}
+                <option> {{ item }} </option>
+            {% endfor %}
+      </select>
+    <br>
+
+    <label for="psw"><b>Пароль пользователя</b></label>
+    <input type="password" placeholder="Пароль" name="psw" maxlength="45" required>
+
+    <hr>
+
+    <button type="submit" class="registerbtn">Зарегистрировать</button>
+  </div>
+</form>
+
+</body>
+</html>

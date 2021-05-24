@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Add padding to containers */
+        .container {
+            padding: 16px;
+            background-color: white;
+        }
+
+        /* Full-width input fields */
+        input[type=text], input[type=password], select {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 22px 0;
+            display: inline-block;
+            border: none;
+            background: #f1f1f1;
+        }
+
+        input[type=text]:focus, input[type=password]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+        /* Overwrite default styles of hr */
+        hr {
+            border: 1px solid #f1f1f1;
+            margin-bottom: 25px;
+        }
+
+        /* Set a style for the submit button */
+        .registerbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        .registerbtn:hover {
+            opacity: 1;
+        }
+
+        form {
+            margin: 0 auto;
+            width: 50em;
+        }
+
+        /* Add a blue text color to links */
+        a {
+            color: dodgerblue;
+        }
+
+        /* Set a grey background color and center the text of the "sign in" section */
+        .signin {
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+
+<form class="form" action="" name="order_page" method="post">
+    {% csrf_token %}
+    <div class="container">
+        <h1>Оформление брони</h1>
+        <hr>
+
+        <h2>Информация о клиенте</h2>
+
+        <label for=""><b>Фамилия клиента</b></label>
+        <input type="text" placeholder="Фамилия" maxlength="16" name="fname" required>
+
+        <label for=""><b>Имя клиента</b></label>
+        <input type="text" placeholder="Имя" maxlength="16" name="sname" required>
+
+        <label for=""><b>Отчество клиента</b></label>
+        <input type="text" placeholder="Отчество" maxlength="16" name="tname" required>
+
+        <label for=""><b>Дата рождения клиента</b></label>
+        <p>
+            <input type="date" id="birth_date" name="birth_date" required>
+        </p>
+
+        <label for=""><b>Телефон клиента</b></label>
+        <input type="text" placeholder="Телефон" name="phone_number" maxlength="20" required>
+
+        <label for=""><b>Паспортные данные</b></label>
+        <input type="text" placeholder="Паспортные данные (без пробелов)" name="passport_number" maxlength="10"
+               required>
+
+        <hr>
+
+        <h2>Информация о брони</h2>
+
+        <label for=""><b>Дата заезда</b></label>
+        <p>
+            <input type="date" id="date_in" name="date_in" required>
+        </p>
+
+        <label for=""><b>Дата выселения</b></label>
+        <p>
+            <input type="date" id="date_out" name="date_out" required>
+        </p>
+
+        <hr>
+
+        <h2>Дополнительные услуги</h2>
+
+        <label for=""><b>Предпочитаемое колличество комнат:</b></label>
+        <p>
+            <div>
+                <input type="radio" id="2" name="room" value="2"
+                       checked required>
+                <label for="huey">2</label>
+            </div>
+
+            <div>
+                <input type="radio" id="3" name="room" value="3" required>
+                <label for="dewey">3</label>
+            </div>
+
+            <div>
+                <input type="radio" id="4" name="room" value="4" required>
+                <label for="louie">4</label>
+            </div>
+        </p>
+
+        <label for=""><b>Дополнительные удобства:</b></label>
+        <p>
+            <div>
+                <input type="checkbox" name="TV" value="TV, ">
+                <label for="scales">Наличие ТВ</label>
+            </div>
+
+            <div>
+                <input type="checkbox" name="big_bath" value="Джакузи, ">
+                <label for="horns">Наличие Джакузи</label>
+            </div>
+
+            <div>
+                <input type="checkbox" name="beauty_view" value="Вид из окна, ">
+                <label for="horns">Красивый вид из окна</label>
+            </div>
+
+            <div>
+                <input type="checkbox" name="work_space" value="Рабочее место">
+                <label for="horns">Наличие рабочего места</label>
+            </div>
+        </p>
+
+        <button type="submit" class="registerbtn">Оформить бронь</button>
+    </div>
+</form>
+
+</body>
+</html>
