@@ -1,7 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.db.models import Q
 
 from hotel_numbers.models import HotelNumber, NumberType
 from reg.models import Worker, Positions, Vacation
@@ -18,6 +17,83 @@ def client_select(request):
 
 def order_success(request):
     return render(request, 'client/orderSUCCESS.html')
+
+
+def client_out_search(request):
+    if request.method == "POST":
+        passport = request.POST['passport_number']
+        try:
+            client_id_search = Client.objects.get(passport_field=passport).id
+            # print(client_id_search)
+            return HttpResponseRedirect(reverse("client_out", args=(client_id_search,)))
+        except Exception:
+            return HttpResponseRedirect(reverse("client_out_search_err"))
+
+    return render(request, 'client/clientOUTSERCH.html')
+
+
+def client_out_search_err(request):
+    return render(request, 'client/clientOUTSERCErr.html')
+
+
+def client_out_suc(request):
+    return render(request, 'client/clientOUTSERCHSuc.html')
+
+
+def client_out_err(request):
+    return render(request, 'client/clientOUTErr.html')
+
+
+def client_out(request, client_id):
+    client: Client = Client.objects.filter(id=client_id).first()
+
+    f_name = client.first_name
+    s_name = client.second_name
+    t_name = client.third_name
+
+    order: Order = Order.objects.filter(execution=True, executed=False, client_id=client_id).first()
+
+    try:
+        date_in = order.check_in_date
+        date_out = order.check_out_date
+    except Exception:
+        return HttpResponseRedirect(reverse("client_out_err"))
+
+    client_number = order.number_id
+    number: HotelNumber = HotelNumber.objects.filter(id=client_number).first()
+
+    worker_id = number.worker_id
+
+    worker: Worker = Worker.objects.filter(id=worker_id).first()
+
+    w_f_name = worker.first_name
+    w_s_name = worker.second_name
+
+    try:
+        if request.method == 'POST':
+            number.room_condition = False
+            number.room_occupancy = False
+            number.save()
+
+            order.execution = False
+            order.executed = True
+            order.save()
+
+            return HttpResponseRedirect(reverse("client_out_suc"))
+    except Exception:
+        return HttpResponseRedirect(reverse("client_out_err"))
+
+    context = {
+        'f_name': f_name,
+        's_name': s_name,
+        't_name': t_name,
+        'date_in': date_in,
+        'date_out': date_out,
+        'w_f_name': w_f_name,
+        'w_s_name': w_s_name
+    }
+
+    return render(request, 'client/clientOUT.html', context)
 
 
 def black_list_info(request, client_id):
@@ -80,19 +156,6 @@ def black_list(request):
         return HttpResponseRedirect(reverse("black_list_err", args=(client,)))
 
     return render(request, 'client/blacklistSEARCH.html')
-
-
-def order_search(request):
-    if request.method == "POST":
-        passport = request.POST['passport_number']
-        try:
-            client_id_search = Client.objects.get(passport_field=passport).id
-            # print(client_id_search)
-            return HttpResponseRedirect(reverse("order_accept", args=(client_id_search,)))
-        except Exception:
-            return HttpResponseRedirect(reverse("search_err"))
-
-    return render(request, 'client/orderSEARCHING.html')
 
 
 def additional_order_search(request):
@@ -182,6 +245,19 @@ def additional_err(request):
     return render(request, 'client/additional_err.html')
 
 
+def order_search(request):
+    if request.method == "POST":
+        passport = request.POST['passport_number']
+        try:
+            client_id_search = Client.objects.get(passport_field=passport).id
+            # print(client_id_search)
+            return HttpResponseRedirect(reverse("order_accept", args=(client_id_search,)))
+        except Exception:
+            return HttpResponseRedirect(reverse("search_err"))
+
+    return render(request, 'client/orderSEARCHING.html')
+
+
 def order_accept(request, client_id):
     client: Client = Client.objects.filter(id=client_id).first()
 
@@ -219,6 +295,15 @@ def order_accept(request, client_id):
 
     print(vacation_filter_for_worker)
 
+    client_id = client.id
+
+    bad_client = BlackList.objects.all()
+
+    for i in bad_client:
+        print(i.client_id, client)
+        if i.client_id == client_id:
+            return HttpResponseRedirect(reverse("black_list_info", args=(client_id,)))
+
     if request.method == 'POST':
         number = request.POST['Number']
         worker_to_number = request.POST['Worker']
@@ -228,6 +313,7 @@ def order_accept(request, client_id):
         hotel_numbers.worker_id = worker_to_number
         hotel_numbers.room_occupancy = True
         order.number_id = number
+        order.execution = True
 
         order.save()
         hotel_numbers.save()
@@ -264,8 +350,8 @@ def restaurant_menu_err(request):
 
 
 def restaurant_order(request):
-    order_list = AdditionalOrder.objects.filter(service_id=ServiceList.objects.filter(name='Завтрак').first())|\
-                 AdditionalOrder.objects.filter(service_id=ServiceList.objects.filter(name='Обед').first())|\
+    order_list = AdditionalOrder.objects.filter(service_id=ServiceList.objects.filter(name='Завтрак').first()) | \
+                 AdditionalOrder.objects.filter(service_id=ServiceList.objects.filter(name='Обед').first()) | \
                  AdditionalOrder.objects.filter(service_id=ServiceList.objects.filter(name='Ужин').first())
     print(order_list)
     client_id = []
@@ -303,7 +389,6 @@ def restaurant_menu(request):
     return render(request, 'client/restaurantMENU.html', context)
 
 
-# Create your views here.
 def index(request):
     if request.method == 'POST':
         first_name = request.POST['fname']

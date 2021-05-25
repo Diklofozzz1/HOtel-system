@@ -40,12 +40,8 @@
             margin-bottom: 25px;
         }
 
-        h1 {
-            text-align: center;
-        }
-
         /* Set a style for the submit button */
-        .auth {
+        .registerbtn {
             background-color: #4CAF50;
             color: white;
             padding: 16px 20px;
@@ -56,11 +52,11 @@
             opacity: 0.9;
         }
 
-        .auth:hover {
+        .registerbtn:hover {
             opacity: 1;
         }
 
-        .form {
+        form {
             margin: 0 auto;
             width: 50em;
         }
@@ -79,42 +75,21 @@
 </head>
 <body>
 
-<div class="form">
+
+<form class="form" action="" method="post">
+    {% csrf_token %}
     <div class="container">
-        <h1>HOTEL</h1>
+        <h1>Поиск заказа</h1>
+        <hr>
 
-        <form action="/order/">
-            <button type="submit" class="auth">Оформить бронь</button>
-        </form>
+        <label for=""><b>Введите паспортные данные клиента</b></label>
+        <input type="text" placeholder="Паспортные данные (без пробелов)" name="passport_number" maxlength="10" required>
 
-        <form action="/order/search/">
-            <button type="submit" class="auth" name="back" value="0">Подтвердить заселение</button>
-        </form>
+        <hr>
 
-        <form action="/client_out/search/">
-            <button type="submit" class="auth" name="back" value="0">Подтвердить выселение</button>
-        </form>
-
-        <form action="/blacklist">
-            <button type="submit" class="auth" name="back" value="0">Черный список</button>
-        </form>
-
-        <form action="/vacations/search/">
-            <button type="submit" class="auth" name="back" value="0">Отпуск</button>
-        </form>
-
-        <form action="/additional_order/search/">
-            <button type="submit" class="auth" name="back" value="0">Дополнительные услуги</button>
-        </form>
-
-        <form action="/rest/">
-            <button type="submit" class="auth" name="back" value="0">Ресторан</button>
-        </form>
-
-        <form action="/admin/">
-            <button type="submit" class="auth" name="back" value="0">Admin</button>
-        </form>
+        <button type="submit" class="registerbtn">Найти</button>
     </div>
-</div>
+</form>
+
 </body>
 </html>

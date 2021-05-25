@@ -23,4 +23,9 @@ urlpatterns = [
     path('rest/menu/', views.restaurant_menu, name='restaurant_menu'),
     path('rest/menu/succ', views.restaurant_menu_success, name='restaurant_menu_success'),
     path('rest/menu/err', views.restaurant_menu_err, name='restaurant_menu_err'),
+    path('client_out/search/', views.client_out_search, name='client_out_search'),
+    path('client_out/search/err', views.client_out_search_err, name='client_out_search_err'),
+    path('client_out/success', views.client_out_suc, name='client_out_suc'),
+    path('client_out/err', views.client_out_err, name='client_out_err'),
+    path('client_out/<int:client_id>', views.client_out, name='client_out'),
 ]

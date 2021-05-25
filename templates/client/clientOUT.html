@@ -20,7 +20,7 @@
         }
 
         /* Full-width input fields */
-        input[type=text], input[type=password] {
+        input[type=text], input[type=password], select {
             width: 100%;
             padding: 15px;
             margin: 5px 0 22px 0;
@@ -40,12 +40,8 @@
             margin-bottom: 25px;
         }
 
-        h1 {
-            text-align: center;
-        }
-
         /* Set a style for the submit button */
-        .auth {
+        .registerbtn {
             background-color: #4CAF50;
             color: white;
             padding: 16px 20px;
@@ -56,11 +52,11 @@
             opacity: 0.9;
         }
 
-        .auth:hover {
+        .registerbtn:hover {
             opacity: 1;
         }
 
-        .form {
+        form {
             margin: 0 auto;
             width: 50em;
         }
@@ -79,42 +75,30 @@
 </head>
 <body>
 
-<div class="form">
+
+<form class="form" action="" name="order_page" method="post">
+    {% csrf_token %}
     <div class="container">
-        <h1>HOTEL</h1>
+        <h1>Подтверждение выезда</h1>
+        <hr>
+        <h2>Детали о клиенте</h2>
+            <p><label for=""><b>Имя: {{ f_name }}</b></label></p>
+            <p><label for=""><b>Фамилия: {{ s_name }}</b></label></p>
+            <p><label for=""><b>Отчество: {{ t_name }}</b></label></p>
 
-        <form action="/order/">
-            <button type="submit" class="auth">Оформить бронь</button>
-        </form>
+        <hr>
+        <h2>Детали о заказе</h2>
+            <p><label for=""><b>Дата заезда: {{ date_in }}</b></label></p>
+            <p><label for=""><b>дата отъезда: {{ date_out }}</b></label></p>
+        <hr>
+        <h2>Инфоромация о работнике</h2>
+            <p><label for=""><b>Имя: {{ w_f_name }}</b></label></p>
+            <p><label for=""><b>Фамилия: {{ w_s_name }}</b></label></p>
+        <hr>
 
-        <form action="/order/search/">
-            <button type="submit" class="auth" name="back" value="0">Подтвердить заселение</button>
-        </form>
-
-        <form action="/client_out/search/">
-            <button type="submit" class="auth" name="back" value="0">Подтвердить выселение</button>
-        </form>
-
-        <form action="/blacklist">
-            <button type="submit" class="auth" name="back" value="0">Черный список</button>
-        </form>
-
-        <form action="/vacations/search/">
-            <button type="submit" class="auth" name="back" value="0">Отпуск</button>
-        </form>
-
-        <form action="/additional_order/search/">
-            <button type="submit" class="auth" name="back" value="0">Дополнительные услуги</button>
-        </form>
-
-        <form action="/rest/">
-            <button type="submit" class="auth" name="back" value="0">Ресторан</button>
-        </form>
-
-        <form action="/admin/">
-            <button type="submit" class="auth" name="back" value="0">Admin</button>
-        </form>
+        <button type="submit" class="registerbtn">Подтвердить выезд</button>
     </div>
-</div>
+</form>
+
 </body>
 </html>
