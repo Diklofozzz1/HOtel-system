@@ -245,6 +245,40 @@ def additional_err(request):
     return render(request, 'client/additional_err.html')
 
 
+def cleaning_room_err(request):
+    return render(request, 'client/numberCLININGErr.html')
+
+
+def cleaning_room(request):
+    room_mass = []
+    item = HotelNumber.objects.all()
+
+    for i in item:
+        if i.room_condition is False:
+            room_mass.append({
+                'numb_id': i.id,
+                'worker': Worker.objects.filter(id=i.worker_id).first()
+            })
+
+    if request.method == 'POST':
+        try:
+            number_id = request.POST['Number']
+            number: HotelNumber = HotelNumber.objects.filter(id=number_id).first()
+            number.room_condition = True
+            number.worker_id = None
+            number.save()
+
+            return HttpResponseRedirect(reverse("cleaning_room"))
+        except Exception:
+            return HttpResponseRedirect(reverse("cleaning_room_err"))
+
+    context = {
+        'hotel_numbers': room_mass,
+    }
+
+    return render(request, 'client/numberCLINING.html', context)
+
+
 def order_search(request):
     if request.method == "POST":
         passport = request.POST['passport_number']

@@ -28,4 +28,6 @@ urlpatterns = [
     path('client_out/success', views.client_out_suc, name='client_out_suc'),
     path('client_out/err', views.client_out_err, name='client_out_err'),
     path('client_out/<int:client_id>', views.client_out, name='client_out'),
+    path('cleaning/', views.cleaning_room, name='cleaning_room'),
+    path('cleaning/err', views.cleaning_room_err, name='cleaning_room_err'),
 ]

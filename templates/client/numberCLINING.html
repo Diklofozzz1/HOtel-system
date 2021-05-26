@@ -81,42 +81,28 @@
 
 <div class="form">
     <div class="container">
-        <h1>HOTEL</h1>
+        <h1>Уборка номеров</h1>
 
-        <form action="/order/">
-            <button type="submit" class="auth">Оформить бронь</button>
+        <form action="" method="post">
+            {% csrf_token %}
+
+            <hr>
+            {% if not hotel_numbers %}
+                <label for=""><b>Все номера убраны</b></label>
+            {% else %}
+                {% for item in hotel_numbers %}
+
+                    <p><input type="radio" name="Number" value={{ item.numb_id }}><b>Номер:</b> {{ item.numb_id }}, <b>Ответственный:</b> {{ item.worker.first_name }} {{ item.worker.second_name }} {{ item.worker.third_name }}<Br>
+                    </p>
+
+                {% endfor %}
+            {% endif %}
+            <hr>
+            <button type="submit" class="auth" name="back" value="0">Номер убран</button>
         </form>
 
-        <form action="/order/search/">
-            <button type="submit" class="auth" name="back" value="0">Подтвердить заселение</button>
-        </form>
-
-        <form action="/client_out/search/">
-            <button type="submit" class="auth" name="back" value="0">Подтвердить выселение</button>
-        </form>
-
-        <form action="/blacklist">
-            <button type="submit" class="auth" name="back" value="0">Черный список</button>
-        </form>
-
-        <form action="/vacations/search/">
-            <button type="submit" class="auth" name="back" value="0">Отпуск</button>
-        </form>
-
-        <form action="/additional_order/search/">
-            <button type="submit" class="auth" name="back" value="0">Дополнительные услуги</button>
-        </form>
-
-        <form action="/rest/">
-            <button type="submit" class="auth" name="back" value="0">Ресторан</button>
-        </form>
-
-        <form action="/cleaning/">
-            <button type="submit" class="auth" name="back" value="0">Уборка номеров</button>
-        </form>
-
-        <form action="/admin/">
-            <button type="submit" class="auth" name="back" value="0">Admin</button>
+        <form action="/select/">
+            <button type="submit" class="auth" name="back" value="0">Назад</button>
         </form>
     </div>
 </div>
