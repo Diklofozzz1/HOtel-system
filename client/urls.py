@@ -30,4 +30,10 @@ urlpatterns = [
     path('client_out/<int:client_id>', views.client_out, name='client_out'),
     path('cleaning/', views.cleaning_room, name='cleaning_room'),
     path('cleaning/err', views.cleaning_room_err, name='cleaning_room_err'),
+    path('storage/', views.storage, name='storage'),
+    path('order_stuff/', views.order_stuff, name='order_stuff'),
+    path('order_stuff/washhouse_select/', views.order_stuff_washhouse_select, name='order_stuff_washhouse_select'),
+    path('order_stuff/washhouse/', views.order_stuff_washhouse, name='order_stuff_washhouse'),
+    path('order_stuff/washhouse/suc', views.order_stuff_washhouse_suc, name='order_stuff_washhouse_suc'),
+    path('order_stuff/washhouse/err', views.order_stuff_washhouse_err, name='order_stuff_washhouse_err'),
 ]

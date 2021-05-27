@@ -20,7 +20,7 @@
         }
 
         /* Full-width input fields */
-        input[type=text], input[type=password] {
+        input[type=number], input[type=password] {
             width: 100%;
             padding: 15px;
             margin: 5px 0 22px 0;
@@ -29,7 +29,7 @@
             background: #f1f1f1;
         }
 
-        input[type=text]:focus, input[type=password]:focus {
+        input[type=number]:focus, input[type=password]:focus {
             background-color: #ddd;
             outline: none;
         }
@@ -81,12 +81,23 @@
 
 <div class="form">
     <div class="container">
-        <h1>Что-то пошло не так(...</h1>
-        <form action="/select/">
-            <button type="submit" class="auth">Вернуться назад</button>
+        <h1>Заказ в прачечную</h1>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <hr>
+                <label for=""><b>Грязного белья на складе</b>: {{ dirty_staff }} </label>
+            <hr>
+                <h2>Введить количество белья для стирки</h2>
+                <label for=""><b>Стирка одного комплекта: 100</b></label>
+            <p>
+            <input type="number" placeholder="Комлекты белья" name="count_to_wash" required>
+            <button type="submit" class="auth" name="back" value="0">Оформить заказ</button>
+        </form>
+        <form action="/order_stuff/">
+            <button type="submit" class="auth" name="back" value="0">Назад</button>
         </form>
     </div>
 </div>
-
 </body>
 </html>

@@ -78,7 +78,7 @@ class AdditionalOrder(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     service = models.ForeignKey(ServiceList, on_delete=models.CASCADE, null=True)
     Menu = models.ForeignKey(MenuList, on_delete=models.CASCADE, null=True)
-    worker = models.ForeignKey(Worker, on_delete=models.CASCADE, null=True)
+    worker = models.ForeignKey(Worker, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.service.name + ' ' + self.client.first_name + ' ' + self.client.second_name + ' ' + self.client.third_name
@@ -86,3 +86,4 @@ class AdditionalOrder(models.Model):
     class Meta:
         verbose_name = 'Заказ (дополнительные услуги)'
         verbose_name_plural = 'Заказы (дополнительные услуги)'
+

@@ -81,12 +81,21 @@
 
 <div class="form">
     <div class="container">
-        <h1>Что-то пошло не так(...</h1>
-        <form action="/select/">
-            <button type="submit" class="auth">Вернуться назад</button>
+        <h1>Заказ для</h1>
+
+        <form action="/order_stuff/washhouse_select/">
+            <button type="submit" class="auth">Прачечная</button>
         </form>
+
+        <form action="/order_stuff/storage/">
+            <button type="submit" class="auth" name="back" value="0">Склад</button>
+        </form>
+
+        <form action="/select/">
+            <button type="submit" class="auth" name="back" value="0">Назад</button>
+        </form>
+
     </div>
 </div>
-
 </body>
 </html>

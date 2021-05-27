@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from hotel_numbers.models import HotelNumber, NumberType
+from hotel_numbers.models import HotelNumber, NumberType, Storage, WashHouse
 from reg.models import Worker, Positions, Vacation
 from .models import Client, Order, BlackList, ServiceList, AdditionalOrder, MenuList
 
@@ -249,6 +249,61 @@ def cleaning_room_err(request):
     return render(request, 'client/numberCLININGErr.html')
 
 
+def storage(request):
+    storage_fill = Storage.objects.all()
+    linel: Storage = Storage.objects.filter(id=1).first()
+    dirty_staff = linel.dirty_staff
+
+    context = {
+        'storage': storage_fill,
+        'dirty_staff': dirty_staff
+    }
+    return render(request, 'client/sorage.HTML', context)
+
+
+def order_stuff_washhouse_select(request):
+    return render(request, 'client/stuffORDER_WASHHOUSE_select.html')
+
+
+def order_stuff_washhouse(request):
+    linel: Storage = Storage.objects.filter(id=1).first()
+    dirty_staff = linel.dirty_staff
+
+    if request.method == 'POST':
+        try:
+            count_to_wash = int(request.POST['count_to_wash'])
+            order_to_wash = WashHouse()
+
+            if int(count_to_wash) <= int(dirty_staff):
+                order_to_wash.number = count_to_wash
+                order_to_wash.coast = count_to_wash * 100
+                order_to_wash.article = Storage.objects.filter(id=1).first()
+                order_to_wash.save()
+
+                linel.dirty_staff = linel.dirty_staff - count_to_wash
+                linel.save()
+                return HttpResponseRedirect(reverse("order_stuff_washhouse_suc"))
+            else:
+                return HttpResponseRedirect(reverse("order_stuff_washhouse_err"))
+
+        except Exception as e:
+            print(e)
+            return HttpResponseRedirect(reverse("order_stuff_washhouse_err"))
+
+    context = {
+        'dirty_staff': dirty_staff
+    }
+    return render(request, 'client/stuffORDER_WASHHOUSE.html', context)
+
+
+def order_stuff_washhouse_err(request):
+    return render(request, 'client/stuffORDER_WASHHOUSE_Err.html')
+
+
+def order_stuff_washhouse_suc(request):
+    return render(request, 'client/stuffORDER_WASHHOUSE_Suc.html')
+
+
 def cleaning_room(request):
     room_mass = []
     item = HotelNumber.objects.all()
@@ -267,6 +322,21 @@ def cleaning_room(request):
             number.room_condition = True
             number.worker_id = None
             number.save()
+
+            count_of_resident = number.number_of_residents
+
+            storage = Storage.objects.all()
+
+            linel: Storage = Storage.objects.filter(id=1).first()
+            linel.dirty_staff = linel.dirty_staff + count_of_resident
+            linel.save()
+
+            for item in storage:
+                if item.quantity > count_of_resident:
+                    item.quantity = item.quantity - count_of_resident
+                    item.save()
+                else:
+                    return HttpResponseRedirect(reverse("cleaning_room_err"))
 
             return HttpResponseRedirect(reverse("cleaning_room"))
         except Exception:
@@ -421,6 +491,10 @@ def restaurant_menu(request):
         'curr_menu': curr_menu,
     }
     return render(request, 'client/restaurantMENU.html', context)
+
+
+def order_stuff(request):
+    return render(request, 'client/stuffORDER.html')
 
 
 def index(request):

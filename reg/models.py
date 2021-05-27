@@ -31,7 +31,7 @@ class Worker(AbstractBaseUser, PermissionsMixin):
     address_name = models.CharField(max_length=100, default='')
     phone_number = models.CharField(max_length=20, default='', unique='True')
     password = models.CharField(max_length=255, default='')
-    positions = models.ForeignKey('Positions', on_delete=models.CASCADE, null=True)
+    positions = models.ForeignKey('Positions', on_delete=models.PROTECT, null=True)
     bonuses = models.FloatField(null=True)
     fine = models.FloatField(null=True)
     is_staff = models.BooleanField(default=False)

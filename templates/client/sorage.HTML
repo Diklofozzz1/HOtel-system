@@ -81,12 +81,26 @@
 
 <div class="form">
     <div class="container">
-        <h1>Что-то пошло не так(...</h1>
+        <h1>Склад</h1>
+
+        <hr>
+        <h2>Готовы к использованию</h2>
+
+        {% for item in storage %}
+            <p><label for=""><b>{{ item.name }}</b>: {{ item.quantity }}</label>
+        {% endfor %}
+
+        <hr>
+
+        <h2>Грязное бельё</h2>
+            <label for=""><b>Грязного белья на складе</b>: {{ dirty_staff }}</label>
+        <p>
+        <hr>
+
         <form action="/select/">
-            <button type="submit" class="auth">Вернуться назад</button>
+            <button type="submit" class="auth" name="back" value="0">Вернуться в меню действий</button>
         </form>
     </div>
 </div>
-
 </body>
 </html>
