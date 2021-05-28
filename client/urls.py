@@ -34,6 +34,7 @@ urlpatterns = [
     path('order_stuff/', views.order_stuff, name='order_stuff'),
     path('order_stuff/washhouse_select/', views.order_stuff_washhouse_select, name='order_stuff_washhouse_select'),
     path('order_stuff/washhouse/', views.order_stuff_washhouse, name='order_stuff_washhouse'),
+    path('order_stuff/washhouse/orders/', views.washhouse_compliting, name='washhouse_compliting'),
     path('order_stuff/washhouse/suc', views.order_stuff_washhouse_suc, name='order_stuff_washhouse_suc'),
     path('order_stuff/washhouse/err', views.order_stuff_washhouse_err, name='order_stuff_washhouse_err'),
 ]

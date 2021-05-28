@@ -304,6 +304,40 @@ def order_stuff_washhouse_suc(request):
     return render(request, 'client/stuffORDER_WASHHOUSE_Suc.html')
 
 
+def washhouse_compliting(request):
+    order_mass = []
+    item = WashHouse.objects.all()
+
+    for i in item:
+        if i.condition is False:
+            order_mass.append({
+                'order_id': i.id,
+                'number': i.number,
+                'coast': i.coast,
+            })
+
+    if request.method == "POST":
+        try:
+            order_number = request.POST['Number']
+            order: WashHouse = WashHouse.objects.filter(id=order_number).first()
+            order.condition = True
+            order.save()
+
+            linel: Storage = Storage.objects.filter(id=1).first()
+            linel.quantity = linel.quantity + order.number
+            linel.save()
+
+            return HttpResponseRedirect(reverse("washhouse_compliting"))
+        except Exception:
+            return HttpResponseRedirect(reverse("order_stuff_washhouse_err"))
+
+    context = {
+        'orders': order_mass
+    }
+
+    return render(request, 'client/stuffORDER_WASHHOUSE_compliting.html', context)
+
+
 def cleaning_room(request):
     room_mass = []
     item = HotelNumber.objects.all()
