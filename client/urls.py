@@ -40,4 +40,5 @@ urlpatterns = [
     path('order_stuff/washhouse/orders/', views.washhouse_compliting, name='washhouse_compliting'),
     path('order_stuff/washhouse/suc', views.order_stuff_washhouse_suc, name='order_stuff_washhouse_suc'),
     path('order_stuff/washhouse/err', views.order_stuff_washhouse_err, name='order_stuff_washhouse_err'),
+    path('profit/', views.profit, name='profit'),
 ]

@@ -20,7 +20,7 @@
         }
 
         /* Full-width input fields */
-        input[type=text], input[type=password], select {
+        input[type=text], input[type=password] {
             width: 100%;
             padding: 15px;
             margin: 5px 0 22px 0;
@@ -40,8 +40,12 @@
             margin-bottom: 25px;
         }
 
+        h1 {
+            text-align: center;
+        }
+
         /* Set a style for the submit button */
-        .registerbtn {
+        .auth {
             background-color: #4CAF50;
             color: white;
             padding: 16px 20px;
@@ -52,11 +56,11 @@
             opacity: 0.9;
         }
 
-        .registerbtn:hover {
+        .auth:hover {
             opacity: 1;
         }
 
-        form {
+        .form {
             margin: 0 auto;
             width: 50em;
         }
@@ -75,48 +79,27 @@
 </head>
 <body>
 
-
-<form class="form" action="" name="order_page_additional" method="post">
-    {% csrf_token %}
+<div class="form">
     <div class="container">
-        <h1>Оформление доп. заказа</h1>
+        <h1>Отчет</h1>
         <hr>
-
-        <h2>Детали о клиенте</h2>
-            <p><label for=""><b>Имя: {{ f_name }}</b></label></p>
-            <p><label for=""><b>Фамилия: {{ s_name }}</b></label></p>
-
-
+            <h2>Доходность отеля</h2>
+            <p><label for=""><b>Доходность: {{ sum_profit }}</b></label></p>
         <hr>
-
-        <label for=""><b>Дата Заказа</b></label>
-        <p>
-            <input type="date" id="birth_date" name="Addition_date" required>
-        </p>
-
+            <h2>Доходы</h2>
+            <p><label for=""><b>Доход с заказов на номера: {{ number_profit }}</b></label></p>
+            <p><label for=""><b>Доход с заказов на доп.услуги: {{ aditional_profit }}</b></label></p>
+            <p><label for=""><b>Общий доход: {{ all_profit }}</b></label></p>
         <hr>
-        <h2>Доступные услуги</h2>
-            {% for item in service_list %}
-                <p><input type="radio" name="Additional" value={{ item.id }}><b>Услуга:</b> {{ item.name }}<Br></p>
-            {% endfor %}
-
-        <hr>
-
-        <label for=""><b>Стоимость</b></label>
-        <p>
-            <input type="number" placeholder="Рубли" maxlength="16" name="Addition_coast" required>
-        </p>
-
-        <hr>
-
-        <h2>Доступные работники</h2>
-            {% for item in worker %}
-                <p><input type="radio" name="Worker" value={{ item.id }}><b>Имя: </b>{{ item.first_name }}, <b>Фамилия: </b>{{ item.second_name }}</p>
-            {% endfor %}
-
-        <button type="submit" class="registerbtn">Оформить Заказ</button>
+            <h2>Расходы</h2>
+            <p><label for=""><b>Расходы на заказы расходников: {{ stuff_coast }}</b></label></p>
+            <p><label for=""><b>Расходы на заказы прачечную: {{ wash_coast }}</b></label></p>
+            <p><label for=""><b>Расходы на заказы зарплаты: {{ worker_coast }}</b></label></p>
+            <p><label for=""><b>Общий расход: {{ all_coast }}</b></label></p>
+        <form action="/select/">
+            <button type="submit" class="auth" name="back" value="0">Вернуться в меню действий</button>
+        </form>
     </div>
-</form>
-
+</div>
 </body>
 </html>

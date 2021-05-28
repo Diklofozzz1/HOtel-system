@@ -631,6 +631,60 @@ def order_stuff(request):
     return render(request, 'client/stuffORDER.html')
 
 
+def profit(request):
+    completed_order = Order.objects.filter(executed=True)
+    additional_order = AdditionalOrder.objects.all()
+
+    number_profit: float = 0.
+
+    for item in completed_order:
+        number_profit += float(HotelNumber.objects.filter(id=item.number_id).first().coast_per_day) * float(
+            ((item.check_out_date - item.check_in_date).days))
+
+    aditional_profit: float = 0.
+
+    for item in additional_order:
+        aditional_profit += item.coast
+
+    all_profit = aditional_profit + number_profit
+
+    washhose_order = WashHouse.objects.filter(condition=True)
+
+    wash_coast: float = 0.
+
+    for item in washhose_order:
+        wash_coast += item.coast
+
+    stuff_order = StaffOrder.objects.all()
+    stuff_coast: float = 0.
+
+    for item in stuff_order:
+        stuff_coast += item.coast
+
+    worker = Worker.objects.all()
+    worker_coast: float = 0.
+
+    for item in worker:
+        worker_coast += float(Positions.objects.filter(id=item.positions_id).first().payment)
+
+    all_coast = worker_coast + stuff_coast + wash_coast
+
+    sum_profit = all_profit - all_coast
+
+    context = {
+        'number_profit': number_profit,
+        'aditional_profit': aditional_profit,
+        'all_profit': all_profit,
+        'wash_coast': wash_coast,
+        'stuff_coast': stuff_coast,
+        'worker_coast': worker_coast,
+        'all_coast': all_coast,
+        'sum_profit': sum_profit
+    }
+
+    return render(request, 'client/profit.html', context)
+
+
 def index(request):
     if request.method == 'POST':
         first_name = request.POST['fname']
