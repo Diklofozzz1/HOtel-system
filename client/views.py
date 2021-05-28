@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from hotel_numbers.models import HotelNumber, NumberType, Storage, WashHouse
+from hotel_numbers.models import HotelNumber, NumberType, Storage, WashHouse, Provider, StaffOrder
 from reg.models import Worker, Positions, Vacation
 from .models import Client, Order, BlackList, ServiceList, AdditionalOrder, MenuList
 
@@ -259,6 +259,106 @@ def storage(request):
         'dirty_staff': dirty_staff
     }
     return render(request, 'client/sorage.HTML', context)
+
+
+def storage_order_suc(request):
+    return render(request, 'client/stuffORDER_storage_suc.html')
+
+
+def storage_order_err(request):
+    return render(request, 'client/stuffORDER_storage_err.html')
+
+
+def storage_order(request):
+    storage_fill = Storage.objects.all()
+    linel: Storage = Storage.objects.filter(id=1).first()
+    dirty_staff = linel.dirty_staff
+    provider = Provider.objects.all()
+    provider_list = [i.name for i in provider]
+
+    vacation = Vacation.objects.all()
+
+    worker: Worker = Worker.objects.filter(positions_id=Positions.objects.filter(name='Администратор').first().id)
+
+    workers = list(worker)
+
+    vacation_filter_for_worker = list(filter(lambda x: not vacation.filter(worker_id=x.id), workers))
+
+    if request.method == "POST":
+        try:
+            linel_to_order = request.POST['Linel']
+            shampoo = request.POST['Shampoo']
+            wash_gel = request.POST['WashGel']
+            brush = request.POST['Brush']
+            razor = request.POST['Razor']
+            paste = request.POST['Paste']
+            paper = request.POST['Paper']
+            soap = request.POST['Soap']
+            order_date = request.POST['order_date']
+            order_provider = request.POST['Provider']
+
+            storage_linel: Storage = Storage.objects.filter(name='Комплект булья').first()
+            storage_shampoo: Storage = Storage.objects.filter(name='Шампунь').first()
+            storage_wash_gel: Storage = Storage.objects.filter(name='Гель для душа').first()
+            storage_brush: Storage = Storage.objects.filter(name='Щётка').first()
+            storage_razor: Storage = Storage.objects.filter(name='Бритва').first()
+            storage_paste: Storage = Storage.objects.filter(name='Паста').first()
+            storage_paper: Storage = Storage.objects.filter(name='Туалетная бумага').first()
+            storage_soap: Storage = Storage.objects.filter(name='Мыло').first()
+
+            count = int(linel_to_order) + int(shampoo) + int(wash_gel) + int(brush) + int(razor) + int(paste) + int(
+                paper) + int(soap)
+            coast = storage_linel.coast * float(linel_to_order) + storage_shampoo.coast * float(
+                shampoo) + storage_wash_gel.coast * float(wash_gel) + storage_brush.coast * float(
+                brush) + storage_razor.coast * float(razor) + storage_paste.coast * float(
+                paste) + storage_paper.coast * float(paper) + storage_soap.coast * float(soap)
+
+            order_staff = StaffOrder()
+
+            order_staff.name = 'Заказ'
+            order_staff.coast = coast
+            order_staff.order_date = order_date
+            order_staff.count = count
+            order_staff.provider_id = provider.filter(name=order_provider).first().id
+            order_staff.worker_id = request.POST['Worker']
+            order_staff.save()
+
+            storage_linel.quantity = storage_linel.quantity + int(linel_to_order)
+            storage_linel.save()
+
+            storage_shampoo.quantity = storage_shampoo.quantity + int(shampoo)
+            storage_shampoo.save()
+
+            storage_wash_gel.quantity = storage_wash_gel.quantity + int(wash_gel)
+            storage_wash_gel.save()
+
+            storage_brush.quantity = storage_brush.quantity + int(brush)
+            storage_brush.save()
+
+            storage_razor.quantity = storage_razor.quantity + int(razor)
+            storage_razor.save()
+
+            storage_paste.quantity = storage_paste.quantity + int(paste)
+            storage_paste.save()
+
+            storage_paper.quantity = storage_paper.quantity + int(paper)
+            storage_paper.save()
+
+            storage_soap.quantity = storage_soap.quantity + int(soap)
+            storage_soap.save()
+
+            return HttpResponseRedirect(reverse("storage_order_suc"))
+        except Exception as e:
+            print(e)
+            return HttpResponseRedirect(reverse("storage_order_err"))
+
+    context = {
+        'storage': storage_fill,
+        'dirty_staff': dirty_staff,
+        'provider_list': provider_list,
+        'worker': vacation_filter_for_worker
+    }
+    return render(request, 'client/stuffORDER_storage.html', context)
 
 
 def order_stuff_washhouse_select(request):

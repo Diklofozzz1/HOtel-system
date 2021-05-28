@@ -60,7 +60,6 @@ class StaffOrder(models.Model):
     count = models.IntegerField(default=0)
     worker = models.ForeignKey(Worker, on_delete=models.PROTECT, null=True)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, null=True)
-    stuff = models.ForeignKey(Storage, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
