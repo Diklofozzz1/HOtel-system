@@ -10,7 +10,6 @@ urlpatterns = [
     path('reg/success/', views.suc_registration, name='suc_registration'),
     path('test/', views.test, name='test'),
     path('auth/', views.auth, name='auth'),
-    path('logout/',  auth_views.LogoutView.as_view(), name='logout'),
     path('vacations/search/', views.search_worker_for_vacations, name='search_worker_for_vacations'),
     path('vacations/search/Err', views.worker_search_err, name='worker_search_err'),
     path('vacations/search/<int:worker_id>', views.vacations_for_worker, name='vacations_for_worker'),

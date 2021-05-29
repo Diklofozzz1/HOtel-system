@@ -1,0 +1,61 @@
+<html lang="en">
+
+<head>
+        <meta charset="utf-8">
+<style>
+    @page {
+        size: a4 portrait;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+        }
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+    @font-face {
+        font-family: f;
+        src: 'D:\djangoProject\templates\static\f.ttf';
+    }
+    html {
+        font-family: f;
+    }
+</style>
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">
+    	<h3>HOTEL System</h3>
+    </div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">(c) - page <pdf:pagenumber>
+        of <pdf:pagecount>
+    </div>
+
+    <!-- HTML Content -->
+        <h1>Отчет</h1>
+        <hr>
+            <h2>Доходность отеля</h2>
+            <p><label for=""><b>Доходность: {{ sum_profit }}</b></label></p>
+        <hr>
+            <h2>Доходы</h2>
+            <p><label for=""><b>Доход с заказов на номера: {{ number_profit }}</b></label></p>
+            <p><label for=""><b>Доход с заказов на доп.услуги: {{ aditional_profit }}</b></label></p>
+            <p><label for=""><b>Общий доход: {{ all_profit }}</b></label></p>
+        <hr>
+            <h2>Расходы</h2>
+            <p><label for=""><b>Расходы на заказы расходников: {{ stuff_coast }}</b></label></p>
+            <p><label for=""><b>Расходы на заказы прачечную: {{ wash_coast }}</b></label></p>
+            <p><label for=""><b>Расходы на заказы зарплаты: {{ worker_coast }}</b></label></p>
+            <p><label for=""><b>Общий расход: {{ all_coast }}</b></label></p>
+
+    <hr>
+
+</body>
+</html>

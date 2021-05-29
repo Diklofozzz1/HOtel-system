@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,11 +10,6 @@ from .models import Vacation
 from .models import Worker
 
 User = get_user_model()
-
-
-def logout_view(request):
-    logout(request)
-    return HttpResponseRedirect("/auth/")
 
 
 def bad_page(request):
@@ -41,13 +36,14 @@ def auth(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("test"))
+            return HttpResponseRedirect(reverse("select_accept_order"))
         else:
             return HttpResponseRedirect(reverse("bad_auth"))
 
     return render(request, 'reg/indexAUTH.html')
 
 
+@login_required(login_url='/auth/')
 def search_worker_for_vacations(request):
     if request.method == "POST":
         phone_number = request.POST['phone_number']
@@ -63,6 +59,7 @@ def search_worker_for_vacations(request):
     return render(request, 'reg/workerSEARCHVacation.html')
 
 
+@login_required(login_url='/auth/')
 def vacations_for_worker(request, worker_id):
     if request.method == "POST":
         start_date = request.POST['date_start']
@@ -82,14 +79,17 @@ def vacations_for_worker(request, worker_id):
     return render(request, 'reg/workerVACATION.html')
 
 
+@login_required(login_url='/auth/')
 def worker_search_err(request):
     return render(request, 'reg/workerSEARCHErr.html')
 
 
+@login_required(login_url='/auth/')
 def worker_vacation_err(request):
     return render(request, 'reg/workerVACATIONErr.html')
 
 
+@login_required(login_url='/auth/')
 def worker_vacation_success(request):
     return render(request, 'reg/workerVACATIONSuc.html')
 

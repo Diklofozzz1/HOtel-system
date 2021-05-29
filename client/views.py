@@ -1,24 +1,67 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from io import BytesIO
+
+from django.contrib.auth import get_user_model, logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect
+from django.template.loader import get_template
 from django.urls import reverse
+from django.views import View
+from xhtml2pdf import pisa
 
 from hotel_numbers.models import HotelNumber, NumberType, Storage, WashHouse, Provider, StaffOrder
 from reg.models import Worker, Positions, Vacation
 from .models import Client, Order, BlackList, ServiceList, AdditionalOrder, MenuList
 
+User = get_user_model()
 
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect("select")
+
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, encodings='UTF-8')
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+data = {}
+
+
+class DownloadPDF(View):
+    def get(self, request, *args, **kwargs):
+        pdf = render_to_pdf('client/pdf_template.html', data)
+
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Invoice_%s.pdf" % ("12341231")
+        content = "attachment; filename=%s" % (filename)
+        response['Content-Disposition'] = content
+        return response
+
+
+@login_required(login_url='/auth/')
 def search_err(request):
     return render(request, 'client/orderSEARCHErr.html')
 
 
+@login_required(login_url='/auth/')
 def client_select(request):
     return render(request, 'client/selectORDER_ACCEPT.html')
 
 
+@login_required(login_url='/auth/')
 def order_success(request):
     return render(request, 'client/orderSUCCESS.html')
 
 
+@login_required(login_url='/auth/')
 def client_out_search(request):
     if request.method == "POST":
         passport = request.POST['passport_number']
@@ -32,18 +75,22 @@ def client_out_search(request):
     return render(request, 'client/clientOUTSERCH.html')
 
 
+@login_required(login_url='/auth/')
 def client_out_search_err(request):
     return render(request, 'client/clientOUTSERCErr.html')
 
 
+@login_required(login_url='/auth/')
 def client_out_suc(request):
     return render(request, 'client/clientOUTSERCHSuc.html')
 
 
+@login_required(login_url='/auth/')
 def client_out_err(request):
     return render(request, 'client/clientOUTErr.html')
 
 
+@login_required(login_url='/auth/')
 def client_out(request, client_id):
     client: Client = Client.objects.filter(id=client_id).first()
 
@@ -96,6 +143,7 @@ def client_out(request, client_id):
     return render(request, 'client/clientOUT.html', context)
 
 
+@login_required(login_url='/auth/')
 def black_list_info(request, client_id):
     bad_client: BlackList = BlackList.objects.filter(client_id=client_id).first()
 
@@ -111,6 +159,7 @@ def black_list_info(request, client_id):
     return render(request, 'client/blacklistINFO.html', context)
 
 
+@login_required(login_url='/auth/')
 def black_list_err(request, client):
     if request.method == 'POST':
         client_id = client
@@ -118,6 +167,7 @@ def black_list_err(request, client):
     return render(request, 'client/blacklistERR.html')
 
 
+@login_required(login_url='/auth/')
 def black_list_add(request, client_id):
     if request.method == 'POST':
         case_date = request.POST['case_date']
@@ -138,6 +188,7 @@ def black_list_add(request, client_id):
     return render(request, 'client/blacklistADD.html')
 
 
+@login_required(login_url='/auth/')
 def black_list(request):
     if request.method == "POST":
         passport = request.POST['passport_number']
@@ -158,6 +209,7 @@ def black_list(request):
     return render(request, 'client/blacklistSEARCH.html')
 
 
+@login_required(login_url='/auth/')
 def additional_order_search(request):
     if request.method == "POST":
         passport = request.POST['passport_number']
@@ -171,6 +223,7 @@ def additional_order_search(request):
     return render(request, 'client/additional_orderSEARCHING.html')
 
 
+@login_required(login_url='/auth/')
 def additional_order(request, client_id):
     client: Client = Client.objects.filter(id=client_id).first()
 
@@ -230,10 +283,12 @@ def additional_order(request, client_id):
     return render(request, 'client/additional_order.html', context)
 
 
+@login_required(login_url='/auth/')
 def additional_search_err(request):
     return render(request, 'client/additional_SEARCHErr.html')
 
 
+@login_required(login_url='/auth/')
 def additional_order_success(request, client_id):
     context = {
         'client_id': client_id
@@ -241,14 +296,17 @@ def additional_order_success(request, client_id):
     return render(request, 'client/additional_SUCCESS.html', context)
 
 
+@login_required(login_url='/auth/')
 def additional_err(request):
     return render(request, 'client/additional_err.html')
 
 
+@login_required(login_url='/auth/')
 def cleaning_room_err(request):
     return render(request, 'client/numberCLININGErr.html')
 
 
+@login_required(login_url='/auth/')
 def storage(request):
     storage_fill = Storage.objects.all()
     linel: Storage = Storage.objects.filter(id=1).first()
@@ -261,14 +319,17 @@ def storage(request):
     return render(request, 'client/sorage.HTML', context)
 
 
+@login_required(login_url='/auth/')
 def storage_order_suc(request):
     return render(request, 'client/stuffORDER_storage_suc.html')
 
 
+@login_required(login_url='/auth/')
 def storage_order_err(request):
     return render(request, 'client/stuffORDER_storage_err.html')
 
 
+@login_required(login_url='/auth/')
 def storage_order(request):
     storage_fill = Storage.objects.all()
     linel: Storage = Storage.objects.filter(id=1).first()
@@ -361,10 +422,12 @@ def storage_order(request):
     return render(request, 'client/stuffORDER_storage.html', context)
 
 
+@login_required(login_url='/auth/')
 def order_stuff_washhouse_select(request):
     return render(request, 'client/stuffORDER_WASHHOUSE_select.html')
 
 
+@login_required(login_url='/auth/')
 def order_stuff_washhouse(request):
     linel: Storage = Storage.objects.filter(id=1).first()
     dirty_staff = linel.dirty_staff
@@ -396,14 +459,17 @@ def order_stuff_washhouse(request):
     return render(request, 'client/stuffORDER_WASHHOUSE.html', context)
 
 
+@login_required(login_url='/auth/')
 def order_stuff_washhouse_err(request):
     return render(request, 'client/stuffORDER_WASHHOUSE_Err.html')
 
 
+@login_required(login_url='/auth/')
 def order_stuff_washhouse_suc(request):
     return render(request, 'client/stuffORDER_WASHHOUSE_Suc.html')
 
 
+@login_required(login_url='/auth/')
 def washhouse_compliting(request):
     order_mass = []
     item = WashHouse.objects.all()
@@ -438,6 +504,7 @@ def washhouse_compliting(request):
     return render(request, 'client/stuffORDER_WASHHOUSE_compliting.html', context)
 
 
+@login_required(login_url='/auth/')
 def cleaning_room(request):
     room_mass = []
     item = HotelNumber.objects.all()
@@ -483,6 +550,7 @@ def cleaning_room(request):
     return render(request, 'client/numberCLINING.html', context)
 
 
+@login_required(login_url='/auth/')
 def order_search(request):
     if request.method == "POST":
         passport = request.POST['passport_number']
@@ -496,6 +564,7 @@ def order_search(request):
     return render(request, 'client/orderSEARCHING.html')
 
 
+@login_required(login_url='/auth/')
 def order_accept(request, client_id):
     client: Client = Client.objects.filter(id=client_id).first()
 
@@ -575,18 +644,22 @@ def order_accept(request, client_id):
     return render(request, 'client/orderACCEPT.html', context)
 
 
+@login_required(login_url='/auth/')
 def restaurant_select(request):
     return render(request, 'client/restaurantSELECT.html')
 
 
+@login_required(login_url='/auth/')
 def restaurant_menu_success(request):
     return render(request, 'client/restaurantMENUSuc.html')
 
 
+@login_required(login_url='/auth/')
 def restaurant_menu_err(request):
     return render(request, 'client/restaurantMENUErr.html')
 
 
+@login_required(login_url='/auth/')
 def restaurant_order(request):
     order_list = AdditionalOrder.objects.filter(service_id=ServiceList.objects.filter(name='Завтрак').first()) | \
                  AdditionalOrder.objects.filter(service_id=ServiceList.objects.filter(name='Обед').first()) | \
@@ -607,6 +680,7 @@ def restaurant_order(request):
     return render(request, 'client/restaurantORDER.html', context)
 
 
+@login_required(login_url='/auth/')
 def restaurant_menu(request):
     menu: MenuList = MenuList.objects.all().last()
     curr_menu = menu.menu
@@ -627,10 +701,12 @@ def restaurant_menu(request):
     return render(request, 'client/restaurantMENU.html', context)
 
 
+@login_required(login_url='/auth/')
 def order_stuff(request):
     return render(request, 'client/stuffORDER.html')
 
 
+@login_required(login_url='/auth/')
 def profit(request):
     completed_order = Order.objects.filter(executed=True)
     additional_order = AdditionalOrder.objects.all()
@@ -682,9 +758,13 @@ def profit(request):
         'sum_profit': sum_profit
     }
 
+    global data
+    data = context
+
     return render(request, 'client/profit.html', context)
 
 
+@login_required(login_url='/auth/')
 def index(request):
     if request.method == 'POST':
         first_name = request.POST['fname']

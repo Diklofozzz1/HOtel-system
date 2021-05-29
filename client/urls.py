@@ -41,4 +41,6 @@ urlpatterns = [
     path('order_stuff/washhouse/suc', views.order_stuff_washhouse_suc, name='order_stuff_washhouse_suc'),
     path('order_stuff/washhouse/err', views.order_stuff_washhouse_err, name='order_stuff_washhouse_err'),
     path('profit/', views.profit, name='profit'),
+    path('pdf_download/', views.DownloadPDF.as_view(), name="pdf_download"),
+    path('logout/', views.logout_view, name="logout_view")
 ]
