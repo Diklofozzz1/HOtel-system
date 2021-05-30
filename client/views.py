@@ -566,50 +566,53 @@ def order_search(request):
 
 @login_required(login_url='/auth/')
 def order_accept(request, client_id):
-    client: Client = Client.objects.filter(id=client_id).first()
+    try:
+        client: Client = Client.objects.filter(id=client_id).first()
 
-    f_name = client.first_name
-    s_name = client.second_name
-    t_name = client.third_name
-    passport = client.passport_field
+        f_name = client.first_name
+        s_name = client.second_name
+        t_name = client.third_name
+        passport = client.passport_field
 
-    order: Order = Order.objects.filter(execution=False, executed=False, client_id=client_id).first()
+        order: Order = Order.objects.filter(execution=False, executed=False, client_id=client_id).first()
 
-    date_in = order.check_in_date
-    date_out = order.check_out_date
-    facilities = order.complementary_services
-    room_numb = order.room_number
+        date_in = order.check_in_date
+        date_out = order.check_out_date
+        facilities = order.complementary_services
+        room_numb = order.room_number
 
-    room_mass = []
-    item = HotelNumber.objects.all()
+        room_mass = []
+        item = HotelNumber.objects.all()
 
-    for i in item:
-        if (i.room_occupancy is False) and (i.room_condition is True):
-            number_type: NumberType = NumberType.objects.filter(id=i.number_type_id).first()
-            room_mass.append({
-                'numb_id': i.id,
-                'prefer_room_facilities': i.complementary_services,
-                'prefer_room_numb': number_type.number_of_room
-            })
+        for i in item:
+            if (i.room_occupancy is False) and (i.room_condition is True):
+                number_type: NumberType = NumberType.objects.filter(id=i.number_type_id).first()
+                room_mass.append({
+                    'numb_id': i.id,
+                    'prefer_room_facilities': i.complementary_services,
+                    'prefer_room_numb': number_type.number_of_room
+                })
 
-    vacation = Vacation.objects.all()
+        vacation = Vacation.objects.all()
 
-    worker: Worker = Worker.objects.filter(positions_id=Positions.objects.filter(name='Уборщик').first().id)
+        worker: Worker = Worker.objects.filter(positions_id=Positions.objects.filter(name='Уборщик').first().id)
 
-    workers = list(worker)
+        workers = list(worker)
 
-    vacation_filter_for_worker = list(filter(lambda x: not vacation.filter(worker_id=x.id), workers))
+        vacation_filter_for_worker = list(filter(lambda x: not vacation.filter(worker_id=x.id), workers))
 
-    print(vacation_filter_for_worker)
+        print(vacation_filter_for_worker)
 
-    client_id = client.id
+        client_id = client.id
 
-    bad_client = BlackList.objects.all()
+        bad_client = BlackList.objects.all()
 
-    for i in bad_client:
-        print(i.client_id, client)
-        if i.client_id == client_id:
-            return HttpResponseRedirect(reverse("black_list_info", args=(client_id,)))
+        for i in bad_client:
+            print(i.client_id, client)
+            if i.client_id == client_id:
+                return HttpResponseRedirect(reverse("black_list_info", args=(client_id,)))
+    except Exception:
+        return HttpResponseRedirect(reverse("search_err"))
 
     if request.method == 'POST':
         number = request.POST['Number']
