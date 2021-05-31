@@ -92,43 +92,46 @@ def client_out_err(request):
 
 @login_required(login_url='/auth/')
 def client_out(request, client_id):
-    client: Client = Client.objects.filter(id=client_id).first()
-
-    f_name = client.first_name
-    s_name = client.second_name
-    t_name = client.third_name
-
-    order: Order = Order.objects.filter(execution=True, executed=False, client_id=client_id).first()
-
     try:
-        date_in = order.check_in_date
-        date_out = order.check_out_date
+        client: Client = Client.objects.filter(id=client_id).first()
+
+        f_name = client.first_name
+        s_name = client.second_name
+        t_name = client.third_name
+
+        order: Order = Order.objects.filter(execution=True, executed=False, client_id=client_id).first()
+
+        try:
+            date_in = order.check_in_date
+            date_out = order.check_out_date
+        except Exception:
+            return HttpResponseRedirect(reverse("client_out_err"))
+
+        client_number = order.number_id
+        number: HotelNumber = HotelNumber.objects.filter(id=client_number).first()
+
+        worker_id = number.worker_id
+
+        worker: Worker = Worker.objects.filter(id=worker_id).first()
+
+        w_f_name = worker.first_name
+        w_s_name = worker.second_name
+
+        try:
+            if request.method == 'POST':
+                number.room_condition = False
+                number.room_occupancy = False
+                number.save()
+
+                order.execution = False
+                order.executed = True
+                order.save()
+
+                return HttpResponseRedirect(reverse("client_out_suc"))
+        except Exception:
+            return HttpResponseRedirect(reverse("client_out_err"))
     except Exception:
-        return HttpResponseRedirect(reverse("client_out_err"))
-
-    client_number = order.number_id
-    number: HotelNumber = HotelNumber.objects.filter(id=client_number).first()
-
-    worker_id = number.worker_id
-
-    worker: Worker = Worker.objects.filter(id=worker_id).first()
-
-    w_f_name = worker.first_name
-    w_s_name = worker.second_name
-
-    try:
-        if request.method == 'POST':
-            number.room_condition = False
-            number.room_occupancy = False
-            number.save()
-
-            order.execution = False
-            order.executed = True
-            order.save()
-
-            return HttpResponseRedirect(reverse("client_out_suc"))
-    except Exception:
-        return HttpResponseRedirect(reverse("client_out_err"))
+        return HttpResponseRedirect(reverse("client_out_search_err"))
 
     context = {
         'f_name': f_name,
